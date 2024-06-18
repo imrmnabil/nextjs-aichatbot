@@ -24,6 +24,11 @@ import { Open_Sans } from "next/font/google";
 
 const opensans = Open_Sans({subsets:["latin"]})
 
+interface ChatMessage {
+  user: string;
+  ai: string[];
+}
+
 export function AIConsole() {
   async function fetchData(input: String) {
     const res = await fetch('/api/fetchAI', {
@@ -39,9 +44,9 @@ export function AIConsole() {
   const [aiResponse, setAiResponse] = useState("")
   const [isTyping, setIsTyping] = useState(false)
   const [userInput, setUserInput] = useState("")
-  const [chatHistory, setChatHistory] = useState([])
-  const chatContainerRef = useRef(null)
-  const handleUserInput = async (e:React.ChangeEvent<HTMLInputElement>) => {
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([])
+  const chatContainerRef = useRef<HTMLDivElement>(null)
+  const handleUserInput = async (e:React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       setIsTyping(true)
       const response = await fetchData(userInput)
@@ -49,18 +54,23 @@ export function AIConsole() {
       const interval = setInterval(() => {
         setAiResponse((prev) => prev + response[i])
         i++
-        chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
+        if (chatContainerRef.current) {
+          chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
         if (i >= response.length) {
           clearInterval(interval)
           setIsTyping(false)
           setUserInput("")
           setChatHistory([...chatHistory, { user: userInput, ai: [response] }])
           setAiResponse("")
-          chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
+          if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+          }
         }
       }, 50)
     } else {
-      setUserInput(e.target.value)
+      const target = e.target as HTMLInputElement
+      setUserInput(target.value)
     }
   }
   return (
@@ -101,7 +111,7 @@ export function AIConsole() {
                 className="w-full bg-transparent text-gray-50 focus:outline-none"
                 placeholder="Type your command here..."
                 onKeyDown={handleUserInput}
-                onChange={handleUserInput}
+                onChange={(e) => setUserInput(e.target.value)} 
                 readOnly={isTyping}
               />
             </div>
