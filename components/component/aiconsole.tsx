@@ -41,7 +41,7 @@ export function AIConsole() {
   const [userInput, setUserInput] = useState("")
   const [chatHistory, setChatHistory] = useState([])
   const chatContainerRef = useRef(null)
-  const handleUserInput = async (e) => {
+  const handleUserInput = async (e:React.ChangeEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       setIsTyping(true)
       const response = await fetchData(userInput)
