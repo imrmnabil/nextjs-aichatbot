@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { metadata } from '../app/layout';
 
-export default async function openaigen(input:String) {
+export default async function openaigen(input: string) {
   const openai = new OpenAI({
     apiKey: process.env["OPENAI_API_KEY"], // This is the default and can be omitted
   });
@@ -12,7 +12,10 @@ export default async function openaigen(input:String) {
     });
     return "Hello"
   } catch (error) {
-    return error.message;
+    if(error instanceof Error){
+      return error.message;
+    }
+    return "Unknown Error";
   }
   
 }
