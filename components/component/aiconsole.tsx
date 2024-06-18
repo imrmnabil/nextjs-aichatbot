@@ -20,6 +20,9 @@ To read more about using these font, please visit the Next.js documentation:
 "use client"
 
 import { useState, useRef } from "react"
+import { Open_Sans } from "next/font/google";
+
+const opensans = Open_Sans({subsets:["latin"]})
 
 export function AIConsole() {
   async function fetchData(input: String) {
@@ -40,8 +43,8 @@ export function AIConsole() {
   const chatContainerRef = useRef(null)
   const handleUserInput = async (e) => {
     if (e.key === "Enter") {
-      const response = await fetchData(userInput)
       setIsTyping(true)
+      const response = await fetchData(userInput)
       let i = -1
       const interval = setInterval(() => {
         setAiResponse((prev) => prev + response[i])
@@ -61,18 +64,21 @@ export function AIConsole() {
     }
   }
   return (
-    <div className="flex min-h-screen flex-col bg-white text-gray-50">
-      <div className="flex-1 p-6">
-        <div className="rounded-md overflow-hidden">
-          <header className="bg-gray-900 pr-6 pl-4 py-2 flex items-center justify-between">
-            <h1 className="text-xl font-semibold">AI Chatbot</h1>
+    <div className="flex min-h-screen flex-col text-gray-50 items-center  bg-[url('/bg.jpg')]">
+      <div className="flex-1 p-6 justify-center container pt-12">
+        <div className="rounded-2xl overflow-hidden backdrop-blur-lg">
+          <header className="from-[#3E3F41] to-[#363739] bg-gradient-to-b pr-6 pl-4 py-2 flex items-center justify-between">
             <div className="flex items-center space-x-1">
               <div className="h-3 w-3 rounded-full bg-red-500" />
               <div className="h-3 w-3 rounded-full bg-yellow-500" />
               <div className="h-3 w-3 rounded-full bg-green-500" />
             </div>
+            <div className={opensans.className}>
+              <h1 className="text-sm">bash - aichatbot</h1>
+            </div>
+            <div className=""></div>
           </header>
-          <div ref={chatContainerRef} className="h-[calc(100vh-10rem)] overflow-auto bg-[#0C0C0C] p-4">
+          <div ref={chatContainerRef} className="h-[calc(100vh-10rem)] overflow-auto bg-[#1E1E1E] p-4">
             <div className="mb-4 text-sm text-green-500">
               Welcome to the AI Chatbot V0.0.3
             </div>
@@ -96,6 +102,7 @@ export function AIConsole() {
                 placeholder="Type your command here..."
                 onKeyDown={handleUserInput}
                 onChange={handleUserInput}
+                readOnly={isTyping}
               />
             </div>
             <div className="mt-4 text-sm">
